@@ -7,11 +7,11 @@ node {
     def dockerImage
     // docker private repositoynin ip adresi (nexus)
 
-    def dockerImageTag = "devopsexample${env.BUILD_NUMBER}"
+    def dockerImageTag = "suayb/app"
 
     stage('Clone Repo') { // görüntüleme amacıyla
       // GitHub repositoryden bazı kodlar alın
-      git 'https://github.com/felipemeriga/DevOps-Example.git'
+      git 'https://github.com/susimsek/spring-boot-jenkins-pipeline.git'
       // Maven toolunu alın.
       // ** NOT: Bu 'maven-3.5.2' Maven aracı yapılandırılmalıdır
       // ** global yapılandırmada.
@@ -25,7 +25,7 @@ node {
 
     stage('Build Docker Image') {
       // docker image build etme
-      dockerImage = docker.build("devopsexample:${env.BUILD_NUMBER}")
+      dockerImage = docker.build("${dockerImageTag}:${env.BUILD_NUMBER}")
     }
 
     stage('Deploy Docker Image'){
@@ -34,16 +34,16 @@ node {
 
       echo "Docker Image Tag Name: ${dockerImageTag}"
 
-	  sh "docker stop devopsexample"
+	 // sh "docker stop devopsexample"
 
-	  sh "docker rm devopsexample"
+	 // sh "docker rm devopsexample"
 
-	  sh "docker run --name devopsexample -d -p 2222:2222 devopsexample:${env.BUILD_NUMBER}"
+	 // sh "docker run --name devopsexample -d -p 2222:2222 devopsexample:${env.BUILD_NUMBER}"
 
-	  // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-      //    dockerImage.push("${env.BUILD_NUMBER}")
-      //      dockerImage.push("latest")
-      //  }
+	   docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+          dockerImage.push("${env.BUILD_NUMBER}")
+          // dockerImage.push("latest")
+        }
 
     }
 }
