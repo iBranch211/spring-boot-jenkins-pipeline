@@ -1,0 +1,18 @@
+version: '3'
+services:
+  jenkins:
+    build: .
+    container_name: jenkins
+    restart: always
+    environment:
+      DOCKER_SOCKET: /var/run/docker.sock
+      DOCKER_GROUP: root
+      JENKINS_USER: jenkins
+      JENKINS_WORKSPACE: /var/jenkins_workspace
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/var/jenkins_home
+      - ~/.kube:/var/jenkins_home/.kube
+    ports:
+      - "8080:8080"
+
