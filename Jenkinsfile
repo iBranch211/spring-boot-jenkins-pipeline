@@ -35,20 +35,14 @@ node {
 
       echo "Docker Image Tag Name: ${dockerImageTag}"
 
-      dir('charts/app'){
-          sh "ls"
-
-
-          sh "helm install . --name app"
+      docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+          dockerImage.push("${env.BUILD_NUMBER}")
+                // dockerImage.push("latest")
       }
 
-
-
-
-
-
-
-
+      dir('charts/app'){
+          sh "helm upgrade app . --set backend.image.tag=${env.BUILD_NUMBER}"
+      }
      // sh "docker-compose down"
 
     //  sh "docker-compose up -d --build"
