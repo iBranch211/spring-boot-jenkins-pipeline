@@ -10,13 +10,23 @@ node {
     def dockerImageTag = "suayb/app"
 
    stage('checkout') {
-           checkout scm
+     checkout scm
    }
 
-    stage('Build Project') {
-      //maven ile proje build etme
-      sh "'${mvnHome}/bin/mvn' clean install"
+    def mvnContainer = docker.image('maven:3-alpine')
+     mvnContainer.inside('-v $HOME/.m2:/root/.m2 -v $PWD:/app -w /app') {
+         stage('Build Project') {
+              //maven ile proje build etme
+              sh "mvn clean install"
+           }
     }
+
+
+    stage('ls') {
+        //maven ile proje build etme
+        sh "ls"
+    }
+
 
     stage('Build Docker Image') {
       // docker image build etme
