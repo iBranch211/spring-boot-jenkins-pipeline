@@ -37,6 +37,8 @@ node {
 
       sh "cd charts/app"
 
+      sh "ls"
+
       sh "helm dep up"
 
       sh "helm install . --name app"
