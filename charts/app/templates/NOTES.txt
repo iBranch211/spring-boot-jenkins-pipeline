@@ -1,0 +1,5 @@
+{{- if .Values.backend.ingress.enabled }}
+{{- range $host := .Values.backend.ingress.hosts }}
+  backend url: http{{ if $.Values.backend.ingress.tls }}s{{ end }}://{{ $host }}{{ $.Values.backend.ingress.path }}
+{{- end }}
+{{- end }}

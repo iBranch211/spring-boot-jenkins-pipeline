@@ -1,0 +1,24 @@
+dependencies:
+- name: mysql
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 1.6.2
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami/
+  version: 8.6.9
+- name: mongodb
+  repository: https://charts.bitnami.com/bitnami/
+  version: 7.10.2
+- name: rabbitmq
+  repository: https://charts.bitnami.com/bitnami/
+  version: 6.19.2
+- name: elasticsearch
+  repository: https://helm.elastic.co/
+  version: 7.6.1
+- name: kibana
+  repository: https://helm.elastic.co/
+  version: 7.6.1
+- name: redis
+  repository: https://charts.bitnami.com/bitnami/
+  version: 10.5.14
+digest: sha256:d02d66e9a47be0fd1c2684f37a6e48c338380d64ca4a0dd892c3c8020f6f32c5
+generated: "2020-03-26T11:21:27.066085+03:00"

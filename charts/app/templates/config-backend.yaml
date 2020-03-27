@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "app.shortname" . }}-backend-configmap
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: backend
+data:
+  {{- if .Values.backend.environment }}
+  {{- range $key, $val := .Values.backend.environment }}
+  {{ $key }}: {{ tpl $val $ | quote }}
+  {{- end }}
+  {{- end }}
+  RELEASE_NAME: {{ .Release.Name }}
+  DB_HOST: "{{ printf "%s-%s" .Release.Name .Values.mysql.nameOverride }}"
+  DB_NAME: "{{ .Values.mysql.mysqlDatabase }}"
+
+
+
+

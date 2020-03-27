@@ -1,0 +1,27 @@
+{{- $route := .Values.backend.route -}}
+  {{- if $route.enabled -}}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ template "app.shortname" . }}-backend
+  {{- with $route.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if $route.host }}
+  host: {{ $route.host }}
+  {{- end }}
+  path: {{ $route.path }}
+  port:
+    targetPort: {{ $.Values.backend.service.externalPort }}
+  to:
+    kind: Service
+    name: {{ template "app.shortname" $ }}-backend
+    weight: 100
+  {{- if $route.tls.enabled }}
+  tls:
+    insecureEdgeTerminationPolicy: {{ $route.tls.insecureEdgeTerminationPolicy }}
+    termination: {{ $route.tls.termination }}
+  {{- end }}
+  {{- end -}}

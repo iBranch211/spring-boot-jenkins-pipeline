@@ -1,0 +1,155 @@
+# Default values for todo.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+imageCredentials:
+  name: pull-secret
+  registry: dockerhub.detaysoft.com
+  username: admin
+  password: admin
+
+global:
+  pullSecrets: pull-secret
+
+
+mysql:
+  enabled: false
+  nameOverride: mysql-todo
+  mysqlDatabase: todo
+  mysqlUser: todo
+  mysqlPassword: todo
+  mysqlRootPassword: todo
+  service:
+    type: ClusterIP
+    port: 3306
+    # nodePort: 32000
+
+postgresql:
+  enabled: false
+  nameOverride: postgresql-todo
+  postgresqlDatabase: todo
+  postgresqlUsername: todo
+  postgresqlPassword: todo
+  postgresqlPostgresPassword: todo
+  service:
+    type: ClusterIP
+    port: 5432
+    # nodePort: 32000
+
+mongodb:
+  enabled: false
+  nameOverride: mongodb-todo
+  mongodbDatabase: todo
+  mongodbUsername: todo
+  mongodbPassword: todo
+  mongodbRootPassword: todo
+  service:
+    type: ClusterIP
+    port: 27017
+    # nodePort: 32000
+
+rabbitmq:
+  enabled: false
+  nameOverride: rabbitmq-todo
+  rabbitmq:
+    username: todo
+    password: todo
+    erlangCookie: cookie
+  service:
+    type: ClusterIP
+    port: 5672
+    managerPort: 15672
+    # nodePort: 32000
+  ingress:
+    enabled: false
+    path: /
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+    hostName: todo.rabbitmq
+
+elasticsearch:
+  enabled: false
+  clusterName: "todo-elasticsearch"
+  replicas: 1
+  minimumMasterNodes: 1
+  httpPort: 9200
+  service:
+    type: ClusterIP
+    # nodePort: 32000
+  resources:
+    requests:
+      cpu: "100m"
+
+kibana:
+  enabled: false
+  nameOverride: kibana-todo
+  elasticsearchHosts: "http://todo-elasticsearch-master:9200"
+  service:
+    type: ClusterIP
+    port: 5601
+    # nodePort: 32000
+  ingress:
+    enabled: false
+    path: /
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+    hosts:
+      - todo.kibana
+  resources:
+    requests:
+      cpu: "100m"
+
+redis:
+  enabled: false
+  nameOverride: redis-todo
+  cluster:
+    enabled: false
+  usePassword: true
+  password: todo
+  master:
+    service:
+      type: ClusterIP
+      port: 6379
+      # nodePort: 32000
+
+backend:
+  replicaCount: 1
+  image:
+    repository: "suayb/app"
+    tag: "2"
+    pullPolicy: Always
+    internalPort: 2222
+  service:
+    name: backend
+    type: NodePort
+    externalPort: 80
+    nodePort: 30030
+  ingress:
+    enabled: true
+    path: /
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+    tls: []
+    hosts:
+      - app.test
+  route:
+    enabled: false
+    path: /
+    annotations: {}
+    host:
+    tls:
+      enabled: true
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+  persistence:
+    enabled: false
+    mountPath: /var
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    annotations: {}
+  environment:
+  resources:
+    requests:
+      memory: "1000Mi"
+    limits:
+      memory: "1000Mi"
