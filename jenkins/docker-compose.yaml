@@ -13,6 +13,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/var/jenkins_home
       - ~/.kube:/var/jenkins_home/.kube
+      - ~/.helm:/var/jenkins_home/.helm
     ports:
       - "8080:8080"
 

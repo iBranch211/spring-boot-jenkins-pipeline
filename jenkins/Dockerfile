@@ -1,8 +1,9 @@
 FROM jenkins/jenkins:lts
 MAINTAINER susimsek
 
+ARG docker_compose_version=1.25.4
 ARG kubernetes_version=v1.15.5
-ARG docker-compose_version=1.25.4
+ARG helm_version=v2.16.3
 
 USER root
 
@@ -22,17 +23,26 @@ RUN curl -sSL https://get.docker.com/ | sh
 RUN usermod -a -G docker jenkins
 
 # En son docker-compose binary dosyasını yükleyin
-RUN curl -L https://github.com/docker/compose/releases/download/$docker-compose_version/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && \
+RUN curl -L https://github.com/docker/compose/releases/download/${docker_compose_version}/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && \
     chmod +x /usr/local/bin/docker-compose
 
 
 # Kubectl'i yükle
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$kubernetes_version/bin/linux/amd64/kubectl
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${kubernetes_version}/bin/linux/amd64/kubectl
 RUN chmod +x ./kubectl
 RUN mv ./kubectl /usr/local/bin/kubectl
 
 RUN mkdir /var/jenkins_home/.kube
 VOLUME ["/var/jenkins_home/.kube"]
+
+# Helm'i yükle
+RUN curl -LO https://get.helm.sh/helm-${helm_version}-linux-amd64.tar.gz && \
+    tar -zxvf helm-${helm_version}-linux-amd64.tar.gz && \
+    mv linux-amd64/helm /usr/local/bin/helm
+RUN chmod +x /usr/local/bin/helm
+
+RUN mkdir /var/jenkins_home/.helm
+VOLUME ["/var/jenkins_home/.helm"]
 
 # Jenkins için eklentiler yükleyin (bunları kaldırabilir / ekleyebilirsiniz)
 RUN /usr/local/bin/install-plugins.sh \
