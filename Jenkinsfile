@@ -38,7 +38,6 @@ node {
       dir('charts/app'){
           sh "ls"
 
-          sh "helm dep up"
 
           sh "helm install . --name app"
       }
