@@ -35,13 +35,19 @@ node {
 
       echo "Docker Image Tag Name: ${dockerImageTag}"
 
-      sh "cd /charts/app"
+      dir('charts/app'){
+          sh "ls"
 
-      sh "ls"
+          sh "helm dep up"
 
-      sh "helm dep up"
+          sh "helm install . --name app"
+      }
 
-      sh "helm install . --name app"
+
+
+
+
+
 
 
      // sh "docker-compose down"
