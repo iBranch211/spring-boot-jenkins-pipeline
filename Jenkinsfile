@@ -35,7 +35,7 @@ node {
 
       echo "Docker Image Tag Name: ${dockerImageTag}"
 
-      sh "cd charts/app"
+      sh "cd /charts/app"
 
       sh "ls"
 
