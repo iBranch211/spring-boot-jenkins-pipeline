@@ -9,14 +9,9 @@ node {
 
     def dockerImageTag = "suayb/app"
 
-    stage('Clone Repo') { // görüntüleme amacıyla
-      // GitHub repositoryden bazı kodlar alın
-      git 'https://github.com/susimsek/spring-boot-jenkins-pipeline.git'
-      // Maven toolunu alın.
-      // ** NOT: Bu 'maven-3.5.2' Maven aracı yapılandırılmalıdır
-      // ** global yapılandırmada.
-      mvnHome = tool 'maven'
-    }
+   stage('checkout') {
+           checkout scm
+   }
 
     stage('Build Project') {
       //maven ile proje build etme
