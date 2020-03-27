@@ -35,9 +35,16 @@ node {
 
       echo "Docker Image Tag Name: ${dockerImageTag}"
 
-      sh "docker-compose down"
+      sh "cd charts/app"
 
-      sh "docker-compose up -d --build"
+      sh "helm dep up"
+
+      sh "helm install . --name app"
+
+
+     // sh "docker-compose down"
+
+    //  sh "docker-compose up -d --build"
 
 	 // sh "docker stop devopsexample"
 
