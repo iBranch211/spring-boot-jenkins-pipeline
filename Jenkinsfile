@@ -1,8 +1,4 @@
 node {
-    // maven referansı
-    // ** NOT: Bu 'maven' Maven aracı Jenkins Global Yapılandırması'nda yapılandırılmalıdır.
-    def mvnHome = tool 'maven'
-
     // docker imagesine referans tutar
     def dockerImage
     // docker private repositoynin ip adresi (nexus)
@@ -38,6 +34,8 @@ node {
       // docker imagesini nexus'a dağıtma
 
       echo "Docker Image Tag Name: ${dockerImageTag}"
+
+      sh "docker-compose down"
 
       sh "docker-compose up -d"
 
