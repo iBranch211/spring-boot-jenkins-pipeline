@@ -6,6 +6,7 @@ node {
     def dockerImageTag = "suayb/app"
     def namespace = "app"
     def component = "backend"
+    def pod_name = sh(script: "kubectl get po -n ${namespace} -l component=${component} -o jsonpath='{.items[0].metadata.name}'", returnStdout: true)
 
    stage('checkout') {
      checkout scm
@@ -37,7 +38,7 @@ node {
 
       echo "Docker Image Tag Name: ${dockerImageTag}"
 
-      def pod_name = sh(script: "kubectl get po -n ${namespace} -l component=${component} -o jsonpath='{.items[0].metadata.name}'", returnStdout: true)
+
       //sh 'kubectl -n ${namespace} get pod -l component=${component} -o jsonpath="{.items[0].metadata.name}"'
 
       echo "Pod Name : ${pod_name}"
