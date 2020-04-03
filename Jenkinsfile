@@ -37,7 +37,7 @@ node {
 
       echo "Docker Image Tag Name: ${dockerImageTag}"
 
-      sh 'POD=$(kubectl -n ${namespace} get pod -l component=${component} -o jsonpath="{.items[0].metadata.name}")'
+      sh 'kubectl -n ${namespace} get pod -l component=${component} -o jsonpath="{.items[0].metadata.name}"'
 
       echo "Pod Name : ${POD}"
 
