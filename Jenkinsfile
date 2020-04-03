@@ -35,7 +35,7 @@ node {
     }
 
     stage("K8s Pod Update"){
-        echo "Pod Name : ${pod_name}"
-        sh "kubectl delete pod ${pod_name} -n ${namespace}"
+        echo "Pod Name : ${k8s_pod_name}"
+        sh "kubectl delete pod ${k8s_pod_name} -n ${k8s_namespace}"
     }
 }
