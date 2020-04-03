@@ -1,7 +1,4 @@
 node {
-
-    // docker private repositoynin ip adresi (nexus)
-
     def dockerImage;
 
     def docker_image_repository = "suayb/app"
@@ -24,7 +21,6 @@ node {
     }
 
     stage("Build Docker Image") {
-      // docker image build etme
       dockerImage = docker.build("${docker_image_repository}:${docker_image_tag}")
     }
 
