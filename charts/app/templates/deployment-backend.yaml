@@ -33,6 +33,18 @@ spec:
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.backend.image.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /actuator/info
+              port: 2222
+            initialDelaySeconds: 10
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 2222
+            initialDelaySeconds: 20
+            periodSeconds: 10
           resources:
             {{- toYaml .Values.backend.resources | nindent 12 }}
         {{- if .Values.backend.persistence.enabled }}
