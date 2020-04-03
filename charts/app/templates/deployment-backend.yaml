@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "app.shortname" . }}-backend
+  name: {{ template "app.shortname" . }}-backend-2
   labels:
     app: {{ template "app.shortname" . }}-backend
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -10,17 +10,13 @@ metadata:
     component: backend
 spec:
   replicas: {{ .Values.backend.replicaCount }}
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
   template:
     metadata:
       labels:
         app: {{ template "app.shortname" . }}-backend
         release: {{ .Release.Name }}
         component: backend
+        version: "2"
     spec:
       {{- if .Values.global.pullSecrets }}
       # only set this secret if a private docker registry variable is defined
@@ -29,22 +25,10 @@ spec:
       {{- end }}
       containers:
         - name: "{{ .Chart.Name }}"
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          image: "{{ .Values.backend.image.repository }}:2"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.backend.image.internalPort }}
-          livenessProbe:
-            httpGet:
-              path: /actuator/info
-              port: 2222
-            initialDelaySeconds: 10
-            periodSeconds: 3
-          readinessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 2222
-            initialDelaySeconds: 20
-            periodSeconds: 10
           resources:
             {{- toYaml .Values.backend.resources | nindent 12 }}
         {{- if .Values.backend.persistence.enabled }}

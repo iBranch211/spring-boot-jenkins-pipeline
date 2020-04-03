@@ -23,3 +23,4 @@ spec:
   selector:
     app: {{ template "app.shortname" . }}-backend
     release: {{ .Release.Name }}
+    version: "2"

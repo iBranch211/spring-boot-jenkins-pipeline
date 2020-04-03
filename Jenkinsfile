@@ -2,7 +2,7 @@ node {
     def dockerImage;
 
     def docker_image_repository = "suayb/app"
-    def docker_image_tag = "2"
+    def docker_image_tag = "3"
     def docker_registry_url = "https://registry.hub.docker.com"
     def k8s_namespace = "app"
     def k8s_component = "backend"
