@@ -39,7 +39,7 @@ node {
 
       sh 'kubectl -n ${namespace} get pod -l component=${component} -o jsonpath="{.items[0].metadata.name}"'
 
-      echo "Pod Name : ${POD}"
+      // echo "Pod Name : ${POD}"
 
 
      /*  docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
