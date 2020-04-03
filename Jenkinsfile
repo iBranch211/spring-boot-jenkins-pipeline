@@ -30,7 +30,6 @@ node {
     stage('Push Docker Image') {
       docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
         dockerImage.push("${docker_image_tag}")
-                          // dockerImage.push("latest")
       }
     }
 
