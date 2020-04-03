@@ -37,10 +37,10 @@ node {
 
       echo "Docker Image Tag Name: ${dockerImageTag}"
 
-      sh "kubectl get po -n ${namespace} -l component=${component} -o jsonpath='{.items[0].metadata.name}'"
+      def pod_name= sh "kubectl get po -n ${namespace} -l component=${component} -o jsonpath='{.items[0].metadata.name}'"
       //sh 'kubectl -n ${namespace} get pod -l component=${component} -o jsonpath="{.items[0].metadata.name}"'
 
-      // echo "Pod Name : ${POD}"
+      echo "Pod Name : ${pod_name}"
 
 
      /*  docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
