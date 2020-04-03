@@ -1,12 +1,14 @@
 node {
-    // docker imagesine referans tutar
-    def dockerImage
+
     // docker private repositoynin ip adresi (nexus)
 
-    def dockerImageTag = "suayb/app"
-    def namespace = "app"
-    def component = "backend"
-    def pod_name = sh(script: "kubectl get po -n ${namespace} -l component=${component} -o jsonpath='{.items[0].metadata.name}'", returnStdout: true)
+    def dockerImage;
+
+    def docker_image_repository = "suayb/app"
+    def docker_image_tag = "2"
+    def k8s_namespace = "app"
+    def k8s_component = "backend"
+    def k8s_pod_name = sh(script: "kubectl get pod -n ${namespace} -l component=${component} -o jsonpath='{.items[0].metadata.name}'", returnStdout: true)
 
    stage('checkout') {
      checkout scm
@@ -20,52 +22,20 @@ node {
            }
     }
 
-
-    stage('ls') {
-        //maven ile proje build etme
-        sh "ls"
-    }
-
-
     stage('Build Docker Image') {
       // docker image build etme
-      dockerImage = docker.build("${dockerImageTag}:${env.BUILD_NUMBER}")
+      dockerImage = docker.build("${docker_image_repository}:${docker_image_tag}")
     }
 
-    stage('Deploy Docker Image'){
+    stage('Push Docker Image') {
+      docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+        dockerImage.push("${docker_image_tag}")
+                          // dockerImage.push("latest")
+      }
+    }
 
-      // docker imagesini nexus'a dağıtma
-
-      echo "Docker Image Tag Name: ${dockerImageTag}"
-
-
-      //sh 'kubectl -n ${namespace} get pod -l component=${component} -o jsonpath="{.items[0].metadata.name}"'
-
-      echo "Pod Name : ${pod_name}"
-
-
-     /*  docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-          dockerImage.push("${env.BUILD_NUMBER}")
-                // dockerImage.push("latest")
-      } */
-
-     /*  dir('charts/app'){
-          sh "helm upgrade app . --set backend.image.tag=${env.BUILD_NUMBER}"
-      } */
-     // sh "docker-compose down"
-
-    //  sh "docker-compose up -d --build"
-
-	 // sh "docker stop devopsexample"
-
-	 // sh "docker rm devopsexample"
-
-	 // sh "docker run --name devopsexample -d -p 2222:2222 devopsexample:${env.BUILD_NUMBER}"
-
-	 //  docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-     //     dockerImage.push("${env.BUILD_NUMBER}")
-          // dockerImage.push("latest")
-      //  }
-
+    stage('K8s Pod Update'){
+        echo "Pod Name : ${pod_name}"
+        sh "kubectl delete pod ${pod_name} -n ${namespace}"
     }
 }
