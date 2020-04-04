@@ -24,7 +24,7 @@ node {
       dockerImage = docker.build("${docker_image_repository}:${docker_image_tag}")
     }
 
-    stage("Push Docker Image") {
+    /* stage("Push Docker Image") {
       docker.withRegistry("${docker_registry_url}", "dockerhub") {
         dockerImage.push("${docker_image_tag}")
       }
@@ -33,5 +33,12 @@ node {
     stage("K8s Pod Update"){
         echo "Pod Name : ${k8s_pod_name}"
         sh "kubectl delete pod ${k8s_pod_name} -n ${k8s_namespace}"
-    }
+    } */
+
+
+     stage("Helm Blue Slot Open"){
+         dir('charts/app'){
+            sh "helm upgrade ${k8s_namespace} . --namespace ${k8s_namespace} --set ${k8s_component}.blue.enabled=true --reuse-values"
+          }
+     }
 }
