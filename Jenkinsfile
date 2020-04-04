@@ -41,4 +41,10 @@ node {
             sh "helm upgrade ${k8s_namespace} . --namespace ${k8s_namespace} --set ${k8s_component}.blue.enabled=true --reuse-values"
           }
      }
+
+     stage("Helm Blue Slot Close"){
+          dir('charts/app'){
+            sh "helm upgrade ${k8s_namespace} . --namespace ${k8s_namespace} --set ${k8s_component}.blue.enabled=false --reuse-values"
+          }
+      }
 }
