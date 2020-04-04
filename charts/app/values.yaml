@@ -114,6 +114,11 @@ redis:
 
 backend:
   replicaCount: 1
+  green:
+    enabled: true
+  blue:
+    enabled: false
+  productionSlot: green
   image:
     repository: "suayb/app"
     tag: "2"

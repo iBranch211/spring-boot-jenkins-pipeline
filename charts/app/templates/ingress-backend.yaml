@@ -26,7 +26,11 @@ spec:
         paths:
           - path: {{ $ingress.path }}
             backend:
+            {{- if eq $.Values.backend.productionSlot "blue" }}
+              serviceName: {{ template "app.shortname" $ }}-backend-blue
+            {{- else }}
               serviceName: {{ template "app.shortname" $ }}-backend
+            {{- end }}
               servicePort: {{ $.Values.backend.service.externalPort }}
   {{- end }}
   {{- end -}}

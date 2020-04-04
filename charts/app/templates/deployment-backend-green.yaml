@@ -1,7 +1,8 @@
+{{ if .Values.backend.green.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "app.shortname" . }}-backend-2
+  name: {{ template "app.shortname" . }}-backend
   labels:
     app: {{ template "app.shortname" . }}-backend
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -16,7 +17,7 @@ spec:
         app: {{ template "app.shortname" . }}-backend
         release: {{ .Release.Name }}
         component: backend
-        version: "2"
+        slot: green
     spec:
       {{- if .Values.global.pullSecrets }}
       # only set this secret if a private docker registry variable is defined
@@ -25,7 +26,7 @@ spec:
       {{- end }}
       containers:
         - name: "{{ .Chart.Name }}"
-          image: "{{ .Values.backend.image.repository }}:2"
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.backend.image.internalPort }}
@@ -52,3 +53,4 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end -}}
+  {{ end }}
