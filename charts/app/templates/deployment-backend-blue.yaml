@@ -1,0 +1,56 @@
+{{ if .Values.backend.blue.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "app.shortname" . }}-backend-blue
+  labels:
+    app: {{ template "app.shortname" . }}-backend
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "app.shortname" . }}-backend
+        release: {{ .Release.Name }}
+        component: backend
+        slot: blue
+    spec:
+      {{- if .Values.global.pullSecrets }}
+      # only set this secret if a private docker registry variable is defined
+      imagePullSecrets:
+        - name: {{ .Values.global.pullSecrets }}
+      {{- end }}
+      containers:
+        - name: "{{ .Chart.Name }}"
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.backend.image.internalPort }}
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+        {{- if .Values.backend.persistence.enabled }}
+          volumeMounts:
+          - name: backend-data
+            mountPath: {{ .Values.backend.persistence.mountPath }}
+            {{- if .Values.backend.persistence.subPath }}
+            subPath: {{ .Values.backend.persistence.subPath }}
+            {{- end }}
+        {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ template "app.shortname" . }}-backend-secret
+            - configMapRef:
+                name: {{ template "app.shortname" . }}-backend-configmap
+      volumes:
+        - name: backend-data
+        {{- if .Values.backend.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "app.shortname" . }}-backend-pvc
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
+  {{ end }}
