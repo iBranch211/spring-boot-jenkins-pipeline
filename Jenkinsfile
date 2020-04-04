@@ -42,9 +42,9 @@ node {
           }
      }
 
-     stage("Helm Blue Slot Close"){
+    /*  stage("Helm Blue Slot Close"){
           dir('charts/app'){
             sh "helm upgrade ${k8s_namespace} . --namespace ${k8s_namespace} --set ${k8s_component}.blue.enabled=false --reuse-values"
           }
-      }
+      } */
 }
